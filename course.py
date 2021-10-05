@@ -7,8 +7,11 @@ class Course:
         self.course_id = header.split("-")[0].strip()
         self.description = header.split("-")[1].strip()
         self.credits = soup.find("h5", class_="mt-0").text.split(" ")[1]
-        long_text = soup.findAll("p")[1].text
-        prereq_position = long_text.find("Prerequisite")
+        try:
+            long_text = soup.findAll("p")[1].text
+            prereq_position = long_text.find("Prerequisite")
+        except IndexError:
+            prereq_position = -1
         if prereq_position == -1:
             self.prereqs = None
         else:
@@ -25,6 +28,7 @@ class Course:
                     break
             prereq_string = prereq_string[start + 2: end]
             prereq_list = prereq_string.split(" ")
+            class_num = 0
             for i, word in enumerate(prereq_list):
                 if i == 0:
                     subject = word
@@ -50,7 +54,7 @@ class Course:
 
     # Generate a dictionary of all of the course variables for saving to the database
     def __generate_dict(self):
-        json = {"_id": self.course_id, "description": self.description, "credits": self.credits,
+        json = {"_id": self.course_id, "subject": self.subject, "description": self.description, "credits": self.credits,
                 "prerequisites": self.prereqs}
         return json
 
