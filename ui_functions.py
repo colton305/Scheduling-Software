@@ -2,6 +2,7 @@
 from tkinter import *
 from tkinter import ttk
 import re
+import time
 
 
 from db import DB
@@ -88,3 +89,11 @@ def update_course_display(master, frame, course_num):
     add_course_button = ttk.Button(frame, style="course.TButton", text="+", width=2,
                                    command=lambda: search_course_modal(master, frame))
     add_course_button.grid(row=course_num)
+
+
+def tab_change_animation(master, canvas, highlight):
+    for i in range(30):
+        increment = -0.0222 * i * (i - 30)
+        canvas.move(highlight, increment, 0)
+        master.update()
+        time.sleep(0.0167)

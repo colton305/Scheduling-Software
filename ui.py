@@ -31,8 +31,11 @@ class App(ttk.Frame):
         self.schedule_icon = Image.open("./assets/schedule_icon.png")
         self.schedule_icon = self.schedule_icon.resize((75, 75))
         self.schedule_icon = ImageTk.PhotoImage(self.schedule_icon)
+        self.style.configure("course_navbar.TButton", image=self.schedule_icon, background="#E0E5EC", borderwidth=0)
+        self.style.map("course_navbar.TButton", background=[("active", "#E0E5EC")])
         self.style.configure("course.TFrame", background="#E0E5EC")
-        self.style.configure("course.TButton", background="#E0E5EC", font=("Montserrat", 16, "bold"), relief="raised")
+        self.style.configure("course.TButton", background="#E0E5EC", font=("Montserrat", 16, "bold"), borderwidth=4,
+                             relief="raised")
         self.style.map("course.TButton", background=[("active", "white")])
         self.style.configure("search.TEntry")
         self.style.configure("course_search.TFrame", background="white")
@@ -41,12 +44,25 @@ class App(ttk.Frame):
         self.style.map("course_search.TButton", background=[("active", "white")], foreground=[("active", "green")])
 
         # Create the scene
-        self.nav_bar = ttk.Frame(self.master, style="navbar.TFrame", padding="0.1i")
+        self.nav_bar = ttk.Frame(self.master, style="navbar.TFrame", padding=15)
         self.nav_bar.grid(row=0, column=0, columnspan=2, sticky=EW)
         self.course_frames = []
-        self.schedule_button = Button(self.nav_bar, image=self.schedule_icon, bg="#E0E5EC", borderwidth=0,
-                                      command=lambda: save_course_selections(self.course_frames))
-        self.schedule_button.grid()
+        self.highlight_canvas, self.highlight = None, None
+        self.schedule_button = ttk.Button(self.nav_bar, style="course_navbar.TButton",
+                                          command=lambda: tab_change_animation(self.nav_bar, self.highlight_canvas,
+                                                                               self.highlight))
+        self.schedule_button.grid(row=0)
+        self.nav_bar.update()
+        self.highlight_canvas = Canvas(self.nav_bar, bg="#E0E5EC", highlightthickness=0,
+                                       width=self.nav_bar.winfo_width(), height=15)
+        self.highlight_canvas.grid(row=1)
+        self.nav_bar.update()
+        self.highlight = self.highlight_canvas.create_oval(self.highlight_canvas.winfo_width()/2 - 5,
+                                                           self.highlight_canvas.winfo_height()/2 - 5,
+                                                           self.highlight_canvas.winfo_width()/2 + 5,
+                                                           self.highlight_canvas.winfo_height()/2 + 5,
+                                                           fill="blue", outline="blue")
+        self.highlight_canvas.update()
         for i in range(2):
             self.course_frames.append(ttk.Frame(self.master, style="course.TFrame"))
             self.course_frames[-1].grid(row=1, column=i, sticky=N)
