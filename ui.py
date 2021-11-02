@@ -7,7 +7,6 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import font
 from PIL import Image, ImageTk
-import pyglet
 
 # Export this to ui_styles.py
 
@@ -31,6 +30,9 @@ class App(ttk.Frame):
         self.schedule_icon = Image.open("./assets/schedule_icon.png")
         self.schedule_icon = self.schedule_icon.resize((75, 75))
         self.schedule_icon = ImageTk.PhotoImage(self.schedule_icon)
+        self.config_icon = Image.open("./assets/configue_icon.png")
+        self.config_icon = self.config_icon.resize((75, 75))
+        self.config_icon = ImageTk.PhotoImage(self.config_icon)
         self.style.configure("course_navbar.TButton", image=self.schedule_icon, background="#E0E5EC", borderwidth=0)
         self.style.map("course_navbar.TButton", background=[("active", "#E0E5EC")])
         self.style.configure("course.TFrame", background="#E0E5EC")
@@ -51,16 +53,17 @@ class App(ttk.Frame):
         self.schedule_button = ttk.Button(self.nav_bar, style="course_navbar.TButton",
                                           command=lambda: tab_change_animation(self.nav_bar, self.highlight_canvas,
                                                                                self.highlight))
-        self.schedule_button.grid(row=0)
+        self.schedule_button.grid(row=0, column=0)
+        self.config_button = ttk.Button(self.nav_bar, style="course_navbar.TButton", image=self.config_icon)
+        self.config_button.grid(row=0, column=1)
         self.nav_bar.update()
-        self.highlight_canvas = Canvas(self.nav_bar, bg="#E0E5EC", highlightthickness=0,
-                                       width=self.nav_bar.winfo_width(), height=15)
-        self.highlight_canvas.grid(row=1)
+        self.highlight_canvas = Canvas(self.nav_bar, bg="#E0E5EC", highlightthickness=0, height=20)
+        self.highlight_canvas.grid(row=1, columnspan=2)
         self.nav_bar.update()
-        self.highlight = self.highlight_canvas.create_oval(self.highlight_canvas.winfo_width()/2 - 5,
-                                                           self.highlight_canvas.winfo_height()/2 - 5,
-                                                           self.highlight_canvas.winfo_width()/2 + 5,
-                                                           self.highlight_canvas.winfo_height()/2 + 5,
+        self.highlight = self.highlight_canvas.create_oval(self.highlight_canvas.winfo_width()/4 - 5,
+                                                           self.highlight_canvas.winfo_height()/4 - 5,
+                                                           self.highlight_canvas.winfo_width()/4 + 5,
+                                                           self.highlight_canvas.winfo_height()/4 + 5,
                                                            fill="blue", outline="blue")
         self.highlight_canvas.update()
         for i in range(2):

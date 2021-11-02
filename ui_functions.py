@@ -93,7 +93,7 @@ def update_course_display(master, frame, course_num):
 
 def tab_change_animation(master, canvas, highlight):
     for i in range(30):
-        increment = -0.0222 * i * (i - 30)
+        increment = -0.04178 * i * (i - 30)
         canvas.move(highlight, increment, 0)
         master.update()
-        time.sleep(0.0167)
+        time.sleep(0.01667)
