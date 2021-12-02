@@ -91,9 +91,25 @@ def update_course_display(master, frame, course_num):
     add_course_button.grid(row=course_num)
 
 
+# An animation for when the user changes the tab
 def tab_change_animation(master, canvas, highlight):
     for i in range(30):
         increment = -0.04178 * i * (i - 30)
         canvas.move(highlight, increment, 0)
         master.update()
         time.sleep(0.01667)
+
+
+# Shelve the current window for when switching tabs, returns the hidden widgets
+def shelve_window(main_window):
+    widgets = []
+    try:
+        for slave in main_window.grid_slaves():
+            slave.forget()
+            widgets.append(slave)
+    except AttributeError:
+        for widget in main_window:
+            for slave in widget.grid_slaves():
+                slave.grid_forget()
+                widgets.append(slave)
+    return widgets

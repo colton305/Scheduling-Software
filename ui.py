@@ -1,4 +1,3 @@
-
 from custom_figures import round_rectangle
 from ui_functions import *
 from backend_functions import *
@@ -44,17 +43,18 @@ class App(ttk.Frame):
         self.style.configure("course_search.TButton", background="white", font=("Montserrat", 14, "bold"),
                              borderwidth=0)
         self.style.map("course_search.TButton", background=[("active", "white")], foreground=[("active", "green")])
+        self.style.configure("config.TEntry", font=("Helvetica", 14))
 
         # Create the scene
         self.nav_bar = ttk.Frame(self.master, style="navbar.TFrame", padding=15)
         self.nav_bar.grid(row=0, column=0, columnspan=2, sticky=EW)
         self.course_frames = []
         self.highlight_canvas, self.highlight = None, None
-        self.schedule_button = ttk.Button(self.nav_bar, style="course_navbar.TButton",
-                                          command=lambda: tab_change_animation(self.nav_bar, self.highlight_canvas,
-                                                                               self.highlight))
+        self.schedule_button = ttk.Button(self.nav_bar, style="course_navbar.TButton")
         self.schedule_button.grid(row=0, column=0)
-        self.config_button = ttk.Button(self.nav_bar, style="course_navbar.TButton", image=self.config_icon)
+        self.config_button = ttk.Button(self.nav_bar, style="course_navbar.TButton", image=self.config_icon,
+                                        command=lambda: self.switch_config_tab()
+                                        )
         self.config_button.grid(row=0, column=1)
         self.nav_bar.update()
         self.highlight_canvas = Canvas(self.nav_bar, bg="#E0E5EC", highlightthickness=0, height=20)
@@ -81,6 +81,28 @@ class App(ttk.Frame):
                                                 command=lambda course_frame=self.course_frames[-1]:
                                                 search_course_modal(self.master, course_frame))
             self.add_course_button.grid(row=0)
+
+            # Dummy variables
+            self.forgotten_widgets = []
+            self.num_schedules = StringVar()
+            self.num_schedules.set("3")
+
+    def populate_config_tab(self):
+        title = Label(self.master, text="Schedule Configuration Settings", font=("Helvetica", 14), bg="#E0E5EC")
+        title.grid(row=1, columnspan=2, sticky=EW)
+        num_schedules_frame = ttk.Frame(self.master, style="course.TFrame")
+        num_schedules_frame.grid(row=2, columnspan=2)
+        num_schedules_label = Label(num_schedules_frame, text="Number of schedules to generate:", font=("Helvetica", 12),
+                                    bg="#E0E5EC")
+        num_schedules_label.grid(row=1, column=1, padx=15)
+        num_schedules_entry = ttk.Entry(num_schedules_frame, style="config.TEntry", textvariable=self.num_schedules,
+                                        width=5, justify=CENTER)
+        num_schedules_entry.grid(row=1, column=2)
+
+    def switch_config_tab(self):
+        tab_change_animation(self.master, self.highlight_canvas, self.highlight)
+        self.forgotten_widgets = shelve_window(self.course_frames)
+        self.populate_config_tab()
 
 
 def main():
